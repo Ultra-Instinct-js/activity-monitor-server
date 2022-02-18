@@ -1,4 +1,4 @@
-# api
+# TaskManager-server
 
 <!-- badges -->
 [![ISC license](https://img.shields.io/badge/License-ISC-blue.svg)](https://www.isc.org/licenses/)
