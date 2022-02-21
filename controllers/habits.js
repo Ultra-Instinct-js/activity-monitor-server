@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 const Habit = require("../models/Habit");
+const { verifyToken } = require("../middleware/verifyUser");
 
 //return habits
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     const habits = await Habit.all(req.params.userId);
     res.json(habits);
@@ -13,7 +14,7 @@ router.get("/", async (req, res) => {
 });
 
 //update habit
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", verifyToken, async (req, res) => {
   try {
     const habitToUpdate = await Habit.findById(req.params.id);
     const updatedHabit = await habitToUpdate.updateProgress(req.body.progress);
@@ -24,7 +25,7 @@ router.patch("/:id", async (req, res) => {
 });
 
 //delete habit
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
   try {
     const habit = Habit.findById(req.params.id);
     await habit.destroy();
