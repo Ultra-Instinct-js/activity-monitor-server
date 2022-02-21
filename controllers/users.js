@@ -1,23 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const Habit = require("../models/Habit");
+const habitRoutes = require("./habits");
 
-//return user
-router.get("/:id", async (req, res) => {});
-
-//return habits
-router.get("/:id/habits", async (req, res) => {
+//delete user
+router.delete("/:id", async (req, res) => {
   try {
-    const habits = await Habit.all;
-    res.json(habits);
+    const user = User.findByUsername(req.params.id);
+    await user.destroy();
+    res.status(204).json("User deleted");
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).json({ err });
   }
 });
 
-//delete user
-router.delete("/:id", async (req, res) => {});
-
-//update habit
-router.patch("/:id/habits/:id", async (req, res) => {});
+router.use("/habits", habitRoutes);
