@@ -16,3 +16,5 @@ router.delete("/:id", verifyToken, async (req, res) => {
 });
 
 router.use("/habits", habitRoutes);
+
+module.exports = router;
