@@ -8,6 +8,7 @@ const { verifyToken } = require("../middleware/verifyUser");
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
     const user = User.findByUsername(req.params.id);
+    console.log("found user");
     await user.destroy();
     res.status(204).json("User deleted");
   } catch (err) {
@@ -15,6 +16,6 @@ router.delete("/:id", verifyToken, async (req, res) => {
   }
 });
 
-router.use("/:id/habits", habitRoutes);
+router.use("/:userId/habits", habitRoutes);
 
 module.exports = router;
