@@ -1,5 +1,7 @@
 const { init } = require("../dbConfig");
 
+const { ObjectId } = require("mongodb");
+
 class Habit {
   constructor(data) {
     for (let key in data) {
@@ -7,14 +9,17 @@ class Habit {
     }
   }
 
-  static all(id) {
+  static getAll(id) {
     return new Promise(async (res, rej) => {
       try {
         const db = await init();
-        let results = db.collections("habits").find({ user: id }).toArray();
-        let habits = results.map((h) => {
-          new Habit(h);
-        });
+        let results = await db
+          .collection("habits")
+          .find({ user: ObjectId(id) })
+          .toArray();
+        console.log(results);
+        let habits = results.map((h) => new Habit({ ...h }));
+        console.log(habits);
         res(habits);
       } catch (error) {
         rej(error);
@@ -23,7 +28,7 @@ class Habit {
   }
 
   static findById() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (res, rej) => {
       try {
         const db = await init();
         let result = await db
@@ -31,26 +36,27 @@ class Habit {
           .find({ _id: ObjectId(id) })
           .toArray();
         let habit = new Habit({ ...result[0], id: result[0]._id });
-        resolve(habit);
+        res(habit);
       } catch (err) {
-        reject("Habit not found");
+        rej("Habit not found");
       }
     });
   }
 
-  static create(data) {
+  static create(id, data) {
     return new Promise(async (res, rej) => {
       try {
         const db = await init();
-        let result = db.collections("habits").insertOne({
-          user: data.user,
+        let result = db.collection("habits").insertOne({
+          user: ObjectId(id),
           habit: data.habit,
           goal: data.goal,
-          uni: data.unit,
+          unit: data.unit,
           creationDate: Date.now(),
-          duration: data.duration
+          duration: data.duration,
+          history: []
         });
-        resolve(result);
+        res(result);
       } catch (error) {
         rej(error);
       }
@@ -61,7 +67,7 @@ class Habit {
     return new Promise(async (res, rej) => {
       try {
         const db = await init();
-        let result = db.collections("habits").findOneAndUpdate(
+        let result = db.collection("habits").findOneAndUpdate(
           {
             _id: ObjectId(this.id)
           },
