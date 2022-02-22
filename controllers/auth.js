@@ -9,7 +9,7 @@ router.post("/register", async (req, res) => {
   try {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    await User.create({ ...req.body, password: hashedPassword });
+    await User.create(req.body.username, req.body.email, hashedPassword);
     res.status(201).json("User created");
   } catch (error) {
     res.status(500).json({ error });
@@ -23,19 +23,16 @@ router.post("/login", async (req, res) => {
     if (!user) {
       throw new Error("User not found");
     }
-    const authenticated = bcrypt.compare(
-      req.body.password,
-      user.hashedPassword
-    );
+    const authenticated = bcrypt.compare(req.body.password, user.hash);
     if (!!authenticated) {
       const payload = { username: user.username, email: user.email };
-      jwt.sign(payload, "secret", { expiresIn: 120 }, (err, token) => {
+      jwt.sign(payload, "secret", { expiresIn: "12h" }, (err, token) => {
         if (err) {
           throw new Error("Error creating token");
         }
         res.status(200).json({
           success: true,
-          token: token
+          token: "Bearer " + token
         });
       });
     } else {
