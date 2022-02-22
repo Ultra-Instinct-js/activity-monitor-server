@@ -3,10 +3,21 @@ const router = express.Router({ mergeParams: true });
 const Habit = require("../models/Habit");
 const { verifyToken } = require("../middleware/verifyUser");
 
+//create habit
+router.post("/", verifyToken, async (req, res) => {
+  try {
+    const habit = Habit.create(req.params.userId, req.body);
+    res.status(201).json(habit);
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+});
+
 //return habits
 router.get("/", verifyToken, async (req, res) => {
   try {
-    const habits = await Habit.all(req.params.userId);
+    const id = req.params.userId;
+    const habits = await Habit.getAll(id);
     res.json(habits);
   } catch (err) {
     res.status(404).send(err);
