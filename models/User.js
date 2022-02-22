@@ -12,7 +12,7 @@ class User {
     return new Promise(async (res, rej) => {
       try {
         const db = await init();
-        let result = db.collections("users").find().toArray();
+        let result = db.collection("users").find().toArray();
         let users = result.map((u) => {
           new User(u);
         });
@@ -23,11 +23,12 @@ class User {
     });
   }
 
-  static create({ username, email, password }) {
+  static create(username, email, password) {
     return new Promise(async (res, rej) => {
       try {
+        console.log("connecting to db");
         const db = await init();
-        let result = db.collections("users").insertOne({
+        let result = db.collection("users").insertOne({
           username: username,
           email: email,
           hash: password
@@ -43,7 +44,8 @@ class User {
     return new Promise(async (res, rej) => {
       try {
         const db = await init();
-        let result = await db.collection("users").find({ email: email });
+        let result = await db.collection("users").findOne({ email: email });
+        console.log(result);
         let user = new User(result);
         res(user);
       } catch (err) {
