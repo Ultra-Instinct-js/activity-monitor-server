@@ -25,7 +25,7 @@ router.post("/login", async (req, res) => {
     }
     const authenticated = bcrypt.compare(req.body.password, user.hash);
     if (!!authenticated) {
-      const payload = { username: user.username, email: user.email };
+      const payload = { username: user.username, email: user.email, uid: user.userId };
       jwt.sign(payload, "secret", { expiresIn: "12h" }, (err, token) => {
         if (err) {
           throw new Error("Error creating token");
