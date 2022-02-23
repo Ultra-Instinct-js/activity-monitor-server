@@ -6,10 +6,10 @@ const { verifyToken } = require("../middleware/verifyUser");
 //create habit
 router.post("/", verifyToken, async (req, res) => {
   try {
-    const habit = Habit.create(req.params.userId, req.body);
+    const habit = await Habit.create(req.params.userId, req.body);
     res.status(201).json(habit);
   } catch (err) {
-    res.status(500).json({ err });
+    res.status(500).json(err.message);
   }
 });
 
@@ -38,7 +38,7 @@ router.patch("/:id", verifyToken, async (req, res) => {
 //delete habit
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
-    const habit = Habit.findById(req.params.id);
+    const habit = await Habit.findById(req.params.id);
     await habit.destroy();
     res.status(204).json("Habit removed");
   } catch (err) {

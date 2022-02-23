@@ -9,6 +9,32 @@ class Habit {
     }
   }
 
+  //create habit
+  static create(id, data) {
+    return new Promise(async (res, rej) => {
+      try {
+        const db = await init();
+        if (data.habit && data.goal && data.unit && data.duration) {
+          let result = db.collection("habits").insertOne({
+            user: ObjectId(id),
+            habit: data.habit,
+            goal: data.goal,
+            unit: data.unit,
+            creationDate: Date.now(),
+            duration: data.duration,
+            history: []
+          });
+          res(result);
+        } else {
+          throw new Error("Input does not have all the correct parameters");
+        }
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
+
+  //return all habits from specific user
   static getAll(id) {
     return new Promise(async (res, rej) => {
       try {
@@ -19,7 +45,9 @@ class Habit {
           .toArray();
         console.log(results);
         let habits = results.map((h) => new Habit({ ...h }));
-        console.log(habits);
+        if (habits === []) {
+          throw new Error("No habits found for user");
+        }
         res(habits);
       } catch (error) {
         rej(error);
@@ -27,7 +55,8 @@ class Habit {
     });
   }
 
-  static findById() {
+  //return specific habit
+  static findById(id) {
     return new Promise(async (res, rej) => {
       try {
         const db = await init();
@@ -43,26 +72,7 @@ class Habit {
     });
   }
 
-  static create(id, data) {
-    return new Promise(async (res, rej) => {
-      try {
-        const db = await init();
-        let result = db.collection("habits").insertOne({
-          user: ObjectId(id),
-          habit: data.habit,
-          goal: data.goal,
-          unit: data.unit,
-          creationDate: Date.now(),
-          duration: data.duration,
-          history: []
-        });
-        res(result);
-      } catch (error) {
-        rej(error);
-      }
-    });
-  }
-
+  //update progress of habi
   updateProgress(progress) {
     return new Promise(async (res, rej) => {
       try {
@@ -87,6 +97,7 @@ class Habit {
     });
   }
 
+  //delete habit
   destroy() {
     return new Promise(async (res, rej) => {
       try {
