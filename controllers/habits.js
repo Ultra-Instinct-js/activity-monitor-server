@@ -29,7 +29,7 @@ router.patch("/:id", verifyToken, async (req, res) => {
   try {
     const habitToUpdate = await Habit.findById(req.params.id);
     const updatedHabit = await habitToUpdate.updateProgress(req.body.progress);
-    res.status(204).json(updatedHabit);
+    res.status(200).json(updatedHabit);
   } catch (err) {
     res.status(500).json({ err });
   }

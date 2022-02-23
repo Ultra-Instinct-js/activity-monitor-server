@@ -72,12 +72,12 @@ class Habit {
     });
   }
 
-  //update progress of habi
+  //update progress of habit
   updateProgress(progress) {
     return new Promise(async (res, rej) => {
       try {
         const db = await init();
-        let result = db.collection("habits").findOneAndUpdate(
+        let result = await db.collection("habits").findOneAndUpdate(
           {
             _id: ObjectId(this.id)
           },
@@ -88,6 +88,9 @@ class Habit {
                 amount: progress
               }
             }
+          },
+          {
+            returnDocument: "after"
           }
         );
         res(result);
