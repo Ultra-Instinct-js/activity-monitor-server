@@ -38,17 +38,20 @@ class Habit {
   static getAll(id) {
     return new Promise(async (res, rej) => {
       try {
-        const db = await init();
-        let results = await db
-          .collection("habits")
-          .find({ user: ObjectId(id) })
-          .toArray();
-        console.log(results);
-        let habits = results.map((h) => new Habit({ ...h }));
-        if (habits === []) {
-          throw new Error("No habits found for user");
+        if (id) {
+          const db = await init();
+          let results = await db
+            .collection("habits")
+            .find({ user: ObjectId(id) })
+            .toArray();
+          let habits = results.map((h) => new Habit({ ...h }));
+          if (habits === []) {
+            throw new Error("No habits found for user");
+          }
+          res(habits);
+        } else {
+          throw new Error("no user specified");
         }
-        res(habits);
       } catch (error) {
         rej(error);
       }
