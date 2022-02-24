@@ -5,21 +5,30 @@
 [![GitHub latest commit](https://img.shields.io/github/last-commit/Ultra-Instinct-js/activity-monitor-server.svg)](https://github.com/Ultra-Instinct-js/activity-monitor-server/commit/)
 [![GitHub forks](https://img.shields.io/github/forks/Ultra-Instinct-js/activity-monitor-server.svg)](https://github.com/Ultra-Instinct-js/activity-monitor-server)
 
+Server-side repo for the Activity Monitor group project. Main project repo can be found [here](https://github.com/Ultra-Instinct-js/activity-monitor-main).
+
 ## Installation & Usage
 
-1. Clone the repo `git clone `
-2. Enter the directory `cd `
+1. Clone the repo `git clone https://github.com/Ultra-Instinct-js/activity-monitor-server.git`
+2. Enter the directory `cd activity-monitor-server`
 3. Install dependencies `npm install`
    
-* `npm start` etc.
+* `npm start` to run the server on port 3000.
+* `npm run dev` to run the server with [`nodemon`](https://github.com/remy/nodemon).
+* `npm test` to run tests.
+
+### Deploy
+
+The API server is currently deployed at https://activity-monitor-server.herokuapp.com/
 
 ## Project Goal
 
-group project description and requirements
+Build a habit tracking website where users can make an account and create habits for themselves to track and update.
 
-## Design & Implementation
+### Other requirements:
 
-api design, endpoints, request and response object (documentation?)
+* Users should be able to choose the frequency that they want to track the habit.
+* Users should be able to see that their habit is complete as well as their most recent completion streak.
 
 ## Changelog
 
@@ -43,3 +52,4 @@ api design, endpoints, request and response object (documentation?)
 
 ## License
 
+* [ISC License](https://www.isc.org/licenses/)
