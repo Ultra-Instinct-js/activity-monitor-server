@@ -79,24 +79,28 @@ class Habit {
   updateProgress(progress) {
     return new Promise(async (res, rej) => {
       try {
-        const db = await init();
-        let result = await db.collection("habits").findOneAndUpdate(
-          {
-            _id: ObjectId(this.id)
-          },
-          {
-            $push: {
-              history: {
-                time: Date.now(),
-                amount: progress
+        if (parseInt(progress)) {
+          const db = await init();
+          let result = await db.collection("habits").findOneAndUpdate(
+            {
+              _id: ObjectId(this.id)
+            },
+            {
+              $push: {
+                history: {
+                  time: Date.now(),
+                  amount: progress
+                }
               }
+            },
+            {
+              returnDocument: "after"
             }
-          },
-          {
-            returnDocument: "after"
-          }
-        );
-        res(result);
+          );
+          res(result);
+        } else {
+          throw new Error("incorrect value for progress");
+        }
       } catch (error) {
         rej(error);
       }
