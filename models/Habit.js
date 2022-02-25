@@ -38,17 +38,20 @@ class Habit {
   static getAll(id) {
     return new Promise(async (res, rej) => {
       try {
-        const db = await init();
-        let results = await db
-          .collection("habits")
-          .find({ user: ObjectId(id) })
-          .toArray();
-        console.log(results);
-        let habits = results.map((h) => new Habit({ ...h }));
-        if (habits === []) {
-          throw new Error("No habits found for user");
+        if (id) {
+          const db = await init();
+          let results = await db
+            .collection("habits")
+            .find({ user: ObjectId(id) })
+            .toArray();
+          let habits = results.map((h) => new Habit({ ...h }));
+          if (habits === []) {
+            throw new Error("No habits found for user");
+          }
+          res(habits);
+        } else {
+          throw new Error("no user specified");
         }
-        res(habits);
       } catch (error) {
         rej(error);
       }
@@ -76,24 +79,28 @@ class Habit {
   updateProgress(progress) {
     return new Promise(async (res, rej) => {
       try {
-        const db = await init();
-        let result = await db.collection("habits").findOneAndUpdate(
-          {
-            _id: ObjectId(this.id)
-          },
-          {
-            $push: {
-              history: {
-                time: Date.now(),
-                amount: progress
+        if (parseInt(progress)) {
+          const db = await init();
+          let result = await db.collection("habits").findOneAndUpdate(
+            {
+              _id: ObjectId(this.id)
+            },
+            {
+              $push: {
+                history: {
+                  time: Date.now(),
+                  amount: progress
+                }
               }
+            },
+            {
+              returnDocument: "after"
             }
-          },
-          {
-            returnDocument: "after"
-          }
-        );
-        res(result);
+          );
+          res(result);
+        } else {
+          throw new Error("incorrect value for progress");
+        }
       } catch (error) {
         rej(error);
       }

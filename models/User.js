@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const { init } = require("../dbConfig");
 
 class User {
@@ -46,7 +47,6 @@ class User {
       try {
         const db = await init();
         let result = await db.collection("users").findOne({ email: email });
-        console.log(result);
         let user = new User(result);
         res(user);
       } catch (err) {
@@ -64,6 +64,33 @@ class User {
         res(user);
       } catch (err) {
         rej(`Error retrieving user: ${err}`);
+      }
+    });
+  }
+
+  static findById(id) {
+    return new Promise(async (res, rej) => {
+      try {
+        const db = await init();
+        let result = await db
+          .collection("users")
+          .findOne({ _id: ObjectId(id) });
+        let user = new User(result);
+        res(user);
+      } catch (err) {
+        rej(`Error retrieving user: ${err}`);
+      }
+    });
+  }
+
+  destroy() {
+    return new Promise(async (res, rej) => {
+      try {
+        const db = await init();
+        db.collection("users").deleteOne({ _id: ObjectId(this.id) });
+        res("User deleted");
+      } catch (err) {
+        rej("User could not be deleted");
       }
     });
   }

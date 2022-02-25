@@ -18,7 +18,7 @@ router.get("/", verifyToken, async (req, res) => {
   try {
     const id = req.params.userId;
     const habits = await Habit.getAll(id);
-    res.json(habits);
+    res.status(200).json(habits);
   } catch (err) {
     res.status(404).send(err);
   }
